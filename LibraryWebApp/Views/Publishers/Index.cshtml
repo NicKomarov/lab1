@@ -1,0 +1,72 @@
+﻿@model IEnumerable<LibraryWebApp.Models.Publisher>
+
+@{
+    ViewData["Title"] = "Видавці";
+}
+
+<h1>Видавці</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adress)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+<div class="container">
+    <div id="chart3"></div>
+</div>
+@section scripts{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.get('/api/ChartPublisher/JsonData', function (JsonData) {
+                var data = google.visualization.arrayToDataTable(JsonData, false);
+                var option = {
+                    title: 'Співвідношення кількості книжок та видавців',
+                    width: 1000,
+                    height: 400
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart3'));
+                chart.draw(data, option);
+            })
+        }
+    </script>
+}
